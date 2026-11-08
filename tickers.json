@@ -1,0 +1,14 @@
+{
+  "comment": "表示する銘柄。symbol は Yahoo Finance の記号、code は帯に出す短い表記、name は帯に出す名前（短いほど多く入る）。",
+  "symbols": [
+    {"symbol": "^N225",  "code": "N225", "name": "日経平均"},
+    {"symbol": "7203.T", "code": "7203", "name": "トヨタ"},
+    {"symbol": "6758.T", "code": "6758", "name": "ソニーG"},
+    {"symbol": "9984.T", "code": "9984", "name": "ソフトバンクG"},
+    {"symbol": "8306.T", "code": "8306", "name": "三菱UFJ"},
+    {"symbol": "6861.T", "code": "6861", "name": "キーエンス"},
+    {"symbol": "7974.T", "code": "7974", "name": "任天堂"},
+    {"symbol": "9983.T", "code": "9983", "name": "ファストリ"},
+    {"symbol": "9432.T", "code": "9432", "name": "NTT"}
+  ]
+}

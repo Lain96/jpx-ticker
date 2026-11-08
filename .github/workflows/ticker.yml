@@ -1,0 +1,25 @@
+# 平日の東京市場の引け後（日本時間 16:30 ごろ）に、終値から帯の画像を作り直して docs/ticker.png を更新する。
+name: update-ticker
+on:
+  schedule:
+    - cron: "30 7 * * 1-5"      # UTC 07:30 = 日本時間 16:30（月〜金）
+  workflow_dispatch: {}          # 手動でも実行できる
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk
+      - run: pip install -r requirements.txt
+      - run: python fetch_and_render.py docs
+      - name: commit
+        run: |
+          git config user.name "ticker-bot"
+          git config user.email "ticker-bot@users.noreply.github.com"
+          git add docs/ticker.png docs/data.json
+          git diff --cached --quiet || git commit -m "update ticker $(date -u +%F)"
+          git push
