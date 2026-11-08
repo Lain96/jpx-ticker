@@ -78,6 +78,77 @@ def render_strip(entries, note, font_px=66):
     return img.resize((W, H), Image.LANCZOS), dict(font_px=font_px, gap_out_px=round(gap_out / SS), blocks=len(blocks))
 
 
+# ---- ボード（壁の青いモニター）用の表 ------------------------------------------------------------
+# モニターは 6.84 m x 3.82 m（縦横比 1.79）。VRChat の画像読み込み上限 2048x2048 以下に収める。
+BW, BH = 2048, 1144
+B_BG_TOP, B_BG_BOT = (16, 44, 138), (24, 66, 176)
+B_HEAD = (8, 24, 84)
+B_LINE = (70, 110, 200)
+B_UP = (255, 104, 92)       # 上昇: 赤（青地で読めるよう少し明るく）
+B_DOWN = (96, 236, 156)     # 下落: 緑
+B_FLAT = (235, 240, 250)
+B_TEXT = (240, 245, 255)
+B_DIM = (150, 175, 230)
+
+
+def fmt_signed(v):
+    s = "{:,.0f}".format(abs(v)) if abs(v) >= 1000 else "{:,.1f}".format(abs(v))
+    return ("+" if v > 0 else "−" if v < 0 else "") + s
+
+
+def render_board(rows, note, title="マーケットボード", sub="終値・前日比", foot="データ: Yahoo Finance（yfinance）の日次終値。遅延データで、投資判断には使えません"):
+    """rows: [dict(code, name, price(float), change(float), pct(float))]。戻り: PIL Image BWxBH（RGB）。"""
+    S = 2
+    img = Image.new("RGB", (BW * S, BH * S), B_BG_BOT)
+    d = ImageDraw.Draw(img)
+    for y in range(BH * S):                       # 縦のグラデーション
+        t = y / (BH * S - 1)
+        d.line([(0, y), (BW * S, y)], fill=tuple(int(B_BG_TOP[i] + (B_BG_BOT[i] - B_BG_TOP[i]) * t) for i in range(3)))
+    F = lambda px: ImageFont.truetype(FONT, int(px * S), index=FONT_INDEX)
+    head_h, colh_h, foot_h = 150, 56, 84
+    d.rectangle([0, 0, BW * S, head_h * S], fill=B_HEAD)
+    d.rectangle([0, head_h * S, BW * S, (head_h + 4) * S], fill=B_LINE)
+    d.text((70 * S, 28 * S), title, font=F(76), fill=B_TEXT)
+    tw = d.textlength(title, font=F(76)) / S
+    d.text(((70 + tw + 36) * S, 70 * S), sub, font=F(40), fill=B_DIM)
+    rw = d.textlength(note, font=F(52)) / S
+    d.text(((BW - 70 - rw) * S, 46 * S), note, font=F(52), fill=B_TEXT)
+    # 列の位置（px）: コード 左 / 銘柄 左 / 終値・前日比・% は右そろえ
+    X_CODE, X_NAME, X_PRICE, X_CHG, X_PCT = 70, 250, 1240, 1590, 1970
+    y0 = head_h + 4
+    for x, t, right in ((X_CODE, "コード", False), (X_NAME, "銘柄", False), (X_PRICE, "終値", True), (X_CHG, "前日比", True), (X_PCT, "騰落率", True)):
+        w = d.textlength(t, font=F(34)) / S
+        d.text(((x - w if right else x) * S, (y0 + 12) * S), t, font=F(34), fill=B_DIM)
+    y0 += colh_h
+    avail = BH - y0 - foot_h
+    n = max(len(rows), 1)
+    rh = min(112, avail / n)
+    fs = int(rh * 0.56)
+    for i, r in enumerate(rows):
+        y = y0 + i * rh
+        if i % 2 == 0:
+            d.rectangle([0, y * S, BW * S, (y + rh) * S], fill=tuple(int(c * 0.88) for c in B_BG_BOT))
+        d.line([(40 * S, (y + rh) * S), ((BW - 40) * S, (y + rh) * S)], fill=B_LINE, width=S)
+        pct = r["pct"]
+        col = B_UP if pct > 0 else B_DOWN if pct < 0 else B_FLAT
+        arrow = "▲" if pct > 0 else "▼" if pct < 0 else "－"
+        cy = y + (rh - fs) / 2 - fs * 0.10
+        d.text((X_CODE * S, (cy + fs * 0.12) * S), r["code"], font=F(fs * 0.72), fill=B_DIM)
+        d.text((X_NAME * S, cy * S), r["name"], font=F(fs), fill=B_TEXT)
+        for x, t, c in ((X_PRICE, fmt_price(r["price"]), B_TEXT), (X_CHG, arrow + " " + fmt_signed(r["change"]).lstrip("+−"), col), (X_PCT, "%s%.2f%%" % ("+" if pct > 0 else "−" if pct < 0 else "", abs(pct)), col)):
+            w = d.textlength(t, font=F(fs)) / S
+            d.text(((x - w) * S, cy * S), t, font=F(fs), fill=c)
+    fy = BH - foot_h
+    d.rectangle([0, fy * S, BW * S, BH * S], fill=B_HEAD)
+    d.rectangle([0, fy * S, BW * S, (fy + 3) * S], fill=B_LINE)
+    ups = sum(1 for r in rows if r["pct"] > 0)
+    dns = sum(1 for r in rows if r["pct"] < 0)
+    d.text((70 * S, (fy + 20) * S), "▲ %d　▼ %d" % (ups, dns), font=F(40), fill=B_TEXT)
+    fw = d.textlength(foot, font=F(30)) / S
+    d.text(((BW - 70 - fw) * S, (fy + 28) * S), foot, font=F(30), fill=B_DIM)
+    return img.resize((BW, BH), Image.LANCZOS)
+
+
 def _wrap_crop(strip, x0, n):
     """strip の x0 から n px（帯は輪なので端をまたいでもよい）。"""
     x0 %= W
