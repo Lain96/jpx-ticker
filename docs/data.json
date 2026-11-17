@@ -1,88 +1,88 @@
 {
- "market_date": "2026-11-13",
+ "market_date": "2026-11-16",
  "data_type": "daily_close",
- "generated": "2026-11-16T17:14:05.608060+00:00",
+ "generated": "2026-11-17T16:59:13.410459+00:00",
  "stocks": [
   {
    "symbol": "^N225",
    "code": "N225",
    "name": "日経平均",
-   "close": 61142.3515625,
-   "prev_close": 60819.359375,
-   "change_pct": 0.53,
-   "date": "2026-11-13"
+   "close": 59662.01953125,
+   "prev_close": 61142.3515625,
+   "change_pct": -2.42,
+   "date": "2026-11-16"
   },
   {
    "symbol": "7203.T",
    "code": "7203",
    "name": "トヨタ",
-   "close": 3418.0,
-   "prev_close": 3408.0,
+   "close": 3428.0,
+   "prev_close": 3418.0,
    "change_pct": 0.29,
-   "date": "2026-11-13"
+   "date": "2026-11-16"
   },
   {
    "symbol": "6758.T",
    "code": "6758",
    "name": "ソニーG",
-   "close": 4353.0,
-   "prev_close": 4281.0,
-   "change_pct": 1.68,
-   "date": "2026-11-13"
+   "close": 4320.0,
+   "prev_close": 4353.0,
+   "change_pct": -0.76,
+   "date": "2026-11-16"
   },
   {
    "symbol": "9984.T",
    "code": "9984",
    "name": "ソフトバンクG",
-   "close": 3547.0,
-   "prev_close": 3738.0,
-   "change_pct": -5.11,
-   "date": "2026-11-13"
+   "close": 3416.0,
+   "prev_close": 3547.0,
+   "change_pct": -3.69,
+   "date": "2026-11-16"
   },
   {
    "symbol": "8306.T",
    "code": "8306",
    "name": "三菱UFJ",
-   "close": 3475.0,
-   "prev_close": 3498.0,
-   "change_pct": -0.66,
-   "date": "2026-11-13"
+   "close": 3415.0,
+   "prev_close": 3475.0,
+   "change_pct": -1.73,
+   "date": "2026-11-16"
   },
   {
    "symbol": "6861.T",
    "code": "6861",
    "name": "キーエンス",
-   "close": 74580.0,
-   "prev_close": 75030.0,
-   "change_pct": -0.6,
-   "date": "2026-11-13"
+   "close": 73450.0,
+   "prev_close": 74580.0,
+   "change_pct": -1.52,
+   "date": "2026-11-16"
   },
   {
    "symbol": "7974.T",
    "code": "7974",
    "name": "任天堂",
-   "close": 8773.0,
-   "prev_close": 8563.0,
-   "change_pct": 2.45,
-   "date": "2026-11-13"
+   "close": 8894.0,
+   "prev_close": 8773.0,
+   "change_pct": 1.38,
+   "date": "2026-11-16"
   },
   {
    "symbol": "9983.T",
    "code": "9983",
    "name": "ファストリ",
-   "close": 82120.0,
-   "prev_close": 80190.0,
-   "change_pct": 2.41,
-   "date": "2026-11-13"
+   "close": 83740.0,
+   "prev_close": 82120.0,
+   "change_pct": 1.97,
+   "date": "2026-11-16"
   },
   {
    "symbol": "9432.T",
    "code": "9432",
    "name": "NTT",
-   "close": 168.39999389648438,
-   "prev_close": 167.5,
-   "change_pct": 0.54,
-   "date": "2026-11-13"
+   "close": 168.60000610351562,
+   "prev_close": 168.39999389648438,
+   "change_pct": 0.12,
+   "date": "2026-11-16"
   }
  ]
 }
